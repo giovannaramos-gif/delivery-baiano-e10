@@ -32,7 +32,7 @@ let taxaEntrega = 0;
 if (bairro === "Rio Vermelho") {
     taxaEntrega = 500;
 } else if (bairro === "Barra") {
-    taxaEntrega = 6;
+  taxaEntrega = 600; // CORREÇÃO 1: De 6 para 600 centavos (R$ 6,00)
 } else if (bairro === "Pituba") {
     taxaEntrega = 700;
 } else if (bairro === "Itapuã") {
@@ -42,7 +42,7 @@ if (bairro === "Rio Vermelho") {
 // 3. Desconto do cupom
 let desconto = 0;
 if (cupom === "PRIMEIRA10") {
-  desconto = (subtotal + taxaEntrega) * 10 / 100;
+  desconto = (subtotal) * 10 / 100; // CORREÇÃO 2: Removido a taxaEntrega da conta do desconto
 }
 
 // 4. Total do pedido
@@ -50,7 +50,7 @@ const total = subtotal - desconto + taxaEntrega;
 
 // 5. Pedido mínimo
 let aceito = false;
-if (subtotal > PEDIDO_MINIMO) {
+if (subtotal >= PEDIDO_MINIMO) { // CORREÇÃO 3: Mudado de > para >= para aceitar o valor mínimo exato
     aceito = true;
 }
 
