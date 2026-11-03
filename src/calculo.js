@@ -18,4 +18,14 @@ const subtotal = PRECO_ACARAJE * qtdAcaraje + PRECO_ABARA * qtdAbara + PRECO_COC
 console.log(`Itens: ${reais.format(subtotal / 100)}`);
 
 // taxa e total: integrante 2
-// regras do pedido: integrante 3
+// Regras do pedido: true ou false, ainda sem if (o if é da Aula 8)
+const PEDIDO_MINIMO = 3000;
+const hora = 12;
+
+const atingiuMinimo = subtotal >= PEDIDO_MINIMO;
+const dentroDoHorario = hora >= 11 && hora < 22;
+const podeEnviar = atingiuMinimo && dentroDoHorario;
+
+console.log(`Atingiu o mínimo de ${reais.format(PEDIDO_MINIMO / 100)}? ${atingiuMinimo}`);
+console.log(`Dentro do horário? ${dentroDoHorario}`);
+console.log(`Pode enviar o pedido? ${podeEnviar}`);
