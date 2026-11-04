@@ -1,37 +1,72 @@
-// src/calculo.js - o total de um pedido do delivery
-// Dinheiro sempre em centavos inteiros. R$ só na hora de mostrar.
 const reais = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
-// Preços do cardápio, em centavos
-const PRECO_ACARAJE = 1200;
-const PRECO_ABARA = 1000;
-const PRECO_COCADA = 600;
+const PRATOS = ["Acarajé", "Abará", "Moqueca de peixe", "Bobó de camarão", "Vatapá", "Cocada"];
+const PRECOS = [1200, 1000, 4200, 3800, 1500, 600]; // centavos
 
-// O pedido: quantas unidades de cada prato
-const qtdAcaraje = 2;
-const qtdAbara = 1;
-const qtdCocada = 1;
-
-// Subtotal dos itens
-const subtotal = PRECO_ACARAJE * qtdAcaraje + PRECO_ABARA * qtdAbara + PRECO_COCADA * qtdCocada;
-
-console.log(`Itens: ${reais.format(subtotal / 100)}`);
-
-// Taxa de entrega e total (taxa fixa por enquanto; por bairro na Aula 8)
-const TAXA_ENTREGA = 600;
-const total = subtotal + TAXA_ENTREGA;
-
-console.log(`Taxa: ${reais.format(TAXA_ENTREGA / 100)}`);
-console.log(`Total: ${reais.format(total / 100)}`);
-
-// Regras do pedido: true ou false, ainda sem if (o if é da Aula 8)
 const PEDIDO_MINIMO = 3000;
-const hora = 12;
 
-const atingiuMinimo = subtotal >= PEDIDO_MINIMO;
-const dentroDoHorario = hora >= 11 && hora < 22;
-const podeEnviar = atingiuMinimo && dentroDoHorario;
+const QUANTIDADES = [
+  [2, 1, 0, 0, 0, 1], // 1. pedido comum
+  [0, 0, 0, 0, 2, 0], // 2. primeira compra com cupom, no limite do mínimo
+  [1, 0, 0, 0, 0, 1], // 3. abaixo do mínimo
+  [0, 0, 1, 0, 0, 0], // 4. 22:00 em ponto
+  [0, 0, 0, 1, 0, 0], // 5. bairro fora da área
+];
+const BAIRROS = ["Barra", "Rio Vermelho", "Pituba", "Itapuã", "Liberdade"];
+const HORAS = [12, 19, 12, 22, 13];
+const PRIMEIRA_COMPRA = [false, true, false, false, false]; // ainda sem cadastro
+const CUPONS = ["", "PRIMEIRA10", "", "", ""];
 
-console.log(`Atingiu o mínimo de ${reais.format(PEDIDO_MINIMO / 100)}? ${atingiuMinimo}`);
-console.log(`Dentro do horário? ${dentroDoHorario}`);
-console.log(`Pode enviar o pedido? ${podeEnviar}`);
+for (let c = 0; c < QUANTIDADES.length; c++) {
+    const qtds = QUANTIDADES[c];
+    const bairro = BAIRROS[c];
+    const hora = HORAS[c];
+    console.log(`\nCenário ${c + 1}: ${bairro}, ${hora}h`);
+
+    let subtotal = 0;
+    let totalItens = 0;
+    for (let i = 0; i < PRECOS.length; i++) {
+    if (qtds[i] === 0) {
+        continue;
+    }
+    subtotal += PRECOS[i] * qtds[i];
+    totalItens += qtds[i];
+    console.log(`  ${qtds[i]} x ${PRATOS[i]}`);
+    }
+    const palavra = totalItens === 1 ? "item" : "itens";
+    console.log(`${totalItens} ${palavra}: ${reais.format(subtotal / 100)}`);
+
+    let taxa = 0;
+    switch (bairro) {
+    case "Rio Vermelho":
+        taxa = 500;
+        break;
+    case "Barra":
+        taxa = 600;
+        break;
+    case "Pituba":
+        taxa = 700;
+        break;
+    case "Itapuã":
+        taxa = 900;
+        break;
+    }
+
+    if (taxa === 0) {
+    console.log(`Recusado: não entregamos em ${bairro}.`);
+    } else if (hora < 11 || hora >= 22) {
+    console.log("Recusado: pedidos só das 11h às 22h.");
+    } else if (subtotal < PEDIDO_MINIMO) {
+    const falta = PEDIDO_MINIMO - subtotal;
+    console.log(`Recusado: faltam ${reais.format(falta / 100)} para o mínimo de ${reais.format(PEDIDO_MINIMO / 100)}.`);
+    } else {
+    const temDesconto = PRIMEIRA_COMPRA[c] && CUPONS[c] === "PRIMEIRA10";
+    const desconto = temDesconto ? Math.round((subtotal * 10) / 100) : 0;
+    const total = subtotal - desconto + taxa;
+    if (desconto > 0) {
+        console.log(`Desconto: ${reais.format(-desconto / 100)}`);
+    }
+    console.log(`Taxa:  ${reais.format(taxa / 100)}`);
+    console.log(`Total: ${reais.format(total / 100)}`);
+    }
+}
