@@ -11,16 +11,8 @@
     "url": "git+https://github.com/giovannaramos-gif/delivery-baiano-e10.git"
   },
   "keywords": [],
-<<<<<<< HEAD
-<<<<<<< HEAD
   "author": "",
   "license": "ISC",
-=======
->>>>>>> ba75273e034a36d6e8b9f2863546e6cfadd8b169
-=======
-  "author": "",
-  "license": "ISC",
->>>>>>> 3b3126fd478df41bc2efda9366cfee3f11e23d8c
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/giovannaramos-gif/delivery-baiano-e10/issues"
