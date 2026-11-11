@@ -1,72 +1,24 @@
+// src/calculo.js - mostra os pedidos na tela usando as regras do regras.js
+const regras = require("./regras.js");
+const { buscarProduto } = require("./dados/cardapio.js");
 const reais = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
-const PRATOS = ["Acarajé", "Abará", "Moqueca de peixe", "Bobó de camarão", "Vatapá", "Cocada"];
-const PRECOS = [1200, 1000, 4200, 3800, 1500, 600]; // centavos
-
-const PEDIDO_MINIMO = 3000;
-
-const QUANTIDADES = [
-  [2, 1, 0, 0, 0, 1], // 1. pedido comum
-  [0, 0, 0, 0, 2, 0], // 2. primeira compra com cupom, no limite do mínimo
-  [1, 0, 0, 0, 0, 1], // 3. abaixo do mínimo
-  [0, 0, 1, 0, 0, 0], // 4. 22:00 em ponto
-  [0, 0, 0, 1, 0, 0], // 5. bairro fora da área
-];
-const BAIRROS = ["Barra", "Rio Vermelho", "Pituba", "Itapuã", "Liberdade"];
-const HORAS = [12, 19, 12, 22, 13];
-const PRIMEIRA_COMPRA = [false, true, false, false, false]; // ainda sem cadastro
-const CUPONS = ["", "PRIMEIRA10", "", "", ""];
-
-for (let c = 0; c < QUANTIDADES.length; c++) {
-    const qtds = QUANTIDADES[c];
-    const bairro = BAIRROS[c];
-    const hora = HORAS[c];
-    console.log(`\nCenário ${c + 1}: ${bairro}, ${hora}h`);
-
-    let subtotal = 0;
-    let totalItens = 0;
-    for (let i = 0; i < PRECOS.length; i++) {
-    if (qtds[i] === 0) {
-        continue;
-    }
-    subtotal += PRECOS[i] * qtds[i];
-    totalItens += qtds[i];
-    console.log(`  ${qtds[i]} x ${PRATOS[i]}`);
-    }
-    const palavra = totalItens === 1 ? "item" : "itens";
-    console.log(`${totalItens} ${palavra}: ${reais.format(subtotal / 100)}`);
-
-    let taxa = 0;
-    switch (bairro) {
-    case "Rio Vermelho":
-        taxa = 500;
-        break;
-    case "Barra":
-        taxa = 600;
-        break;
-    case "Pituba":
-        taxa = 700;
-        break;
-    case "Itapuã":
-        taxa = 900;
-        break;
-    }
-
-    if (taxa === 0) {
-    console.log(`Recusado: não entregamos em ${bairro}.`);
-    } else if (hora < 11 || hora >= 22) {
-    console.log("Recusado: pedidos só das 11h às 22h.");
-    } else if (subtotal < PEDIDO_MINIMO) {
-    const falta = PEDIDO_MINIMO - subtotal;
-    console.log(`Recusado: faltam ${reais.format(falta / 100)} para o mínimo de ${reais.format(PEDIDO_MINIMO / 100)}.`);
-    } else {
-    const temDesconto = PRIMEIRA_COMPRA[c] && CUPONS[c] === "PRIMEIRA10";
-    const desconto = temDesconto ? Math.round((subtotal * 10) / 100) : 0;
-    const total = subtotal - desconto + taxa;
-    if (desconto > 0) {
-        console.log(`Desconto: ${reais.format(-desconto / 100)}`);
-    }
-    console.log(`Taxa:  ${reais.format(taxa / 100)}`);
+function mostrarPedido(pedido) {
+  console.log(`${pedido.bairro}, ${pedido.hora}h`);
+  for (const item of pedido.itens) {
+    console.log(`  ${item.qtd} x ${buscarProduto(item.id).nome}`);
+  }
+  const motivo = regras.motivoDaRecusa(pedido);
+  if (motivo === "") {
+    const total = regras.calcularTotal(pedido);
     console.log(`Total: ${reais.format(total / 100)}`);
-    }
+  } else {
+    console.log(`Recusado: ${motivo}.`);
+  }
 }
+
+mostrarPedido({ itens: [{ id: 1, qtd: 2 }, { id: 2, qtd: 1 }, { id: 6, qtd: 1 }], bairro: "Barra", hora: 12, primeiraCompra: false, cupom: "" });
+mostrarPedido({ itens: [{ id: 5, qtd: 2 }], bairro: "Rio Vermelho", hora: 19, primeiraCompra: true, cupom: "PRIMEIRA10" });
+mostrarPedido({ itens: [{ id: 1, qtd: 1 }, { id: 6, qtd: 1 }], bairro: "Pituba", hora: 12, primeiraCompra: false, cupom: "" });
+mostrarPedido({ itens: [{ id: 3, qtd: 1 }], bairro: "Itapuã", hora: 22, primeiraCompra: false, cupom: "" });
+mostrarPedido({ itens: [{ id: 4, qtd: 1 }], bairro: "Liberdade", hora: 13, primeiraCompra: false, cupom: "" });
