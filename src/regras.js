@@ -1,8 +1,8 @@
-// src/regras.js - as regras do pedido da Dona Ju
-const PRECOS = [1200, 1000, 4200, 3800, 1500, 600];
+// src/regras.js - as regras do pedido da Dona Ju, em funções
+const { buscarProduto } = require("./dados/cardapio.js");
 const PEDIDO_MINIMO = 3000;
 
-// Passo 2: Subtotal
+// Soma preço vezes quantidade, prato por prato
 function calcularSubtotal(precos, qtds) {
   let subtotal = 0;
   for (let i = 0; i < precos.length; i++) {
@@ -11,7 +11,12 @@ function calcularSubtotal(precos, qtds) {
   return subtotal;
 }
 
-// Passo 3: Taxa de Entrega por Bairro
+// Soma os itens do pedido: [{ id, qtd }, ...], com o preço do cardápio
+function subtotalDosItens(itens) {
+  return itens.reduce((soma, item) => soma + buscarProduto(item.id).preco * item.qtd, 0);
+}
+
+// Taxa de entrega pelo bairro (0 se fora da área)
 function calcularTaxa(bairro) {
   const taxas = {
     "Barra": 600,
@@ -24,12 +29,7 @@ function calcularTaxa(bairro) {
   return taxas[bairro] !== undefined ? taxas[bairro] : 0;
 }
 
-// Passo 3: Horário de Funcionamento (11h às 21h59)
-function dentroDoHorario(hora) {
-  return hora >= 11 && hora < 22;
-}
-
-// Passo 4: Desconto
+// Cupom PRIMEIRA10: 10% nos itens, só na primeira compra
 function calcularDesconto(subtotal, cupom, primeiraCompra) {
   if (cupom === "PRIMEIRA10" && primeiraCompra) {
     return Math.round(subtotal * 0.10);
@@ -37,7 +37,12 @@ function calcularDesconto(subtotal, cupom, primeiraCompra) {
   return 0;
 }
 
-// Passo 4: Motivos de Recusa
+// Pedidos das 11h às 22h; 22h em ponto já recusa
+function dentroDoHorario(hora) {
+  return hora >= 11 && hora < 22;
+}
+
+// Devolve o motivo da recusa, ou "" quando o pedido pode seguir
 function motivoDaRecusa(pedido) {
   if (!dentroDoHorario(pedido.hora)) {
     return "pedidos só das 11h às 22h";
@@ -48,30 +53,27 @@ function motivoDaRecusa(pedido) {
     return `não entregamos em ${pedido.bairro}`;
   }
 
-  const subtotal = calcularSubtotal(PRECOS, pedido.qtds);
-  if (subtotal < PEDIDO_MINIMO) {
+  if (subtotalDosItens(pedido.itens) < PEDIDO_MINIMO) {
     return "abaixo do mínimo de R$ 30,00 em itens";
   }
 
   return "";
 }
 
-// Passo 5: Total do Pedido
+// Total: itens, menos o desconto, mais a taxa de entrega
 function calcularTotal(pedido) {
-  const subtotal = calcularSubtotal(PRECOS, pedido.qtds);
-  const taxa = calcularTaxa(pedido.bairro);
+  const subtotal = subtotalDosItens(pedido.itens);
   const desconto = calcularDesconto(subtotal, pedido.cupom, pedido.primeiraCompra);
-  
-  return subtotal + taxa - desconto;
+  const taxa = calcularTaxa(pedido.bairro);
+  return subtotal - desconto + taxa;
 }
 
 module.exports = {
-  PRECOS,
-  PEDIDO_MINIMO,
   calcularSubtotal,
+  subtotalDosItens,
   calcularTaxa,
-  dentroDoHorario,
   calcularDesconto,
+  dentroDoHorario,
   motivoDaRecusa,
-  calcularTotal
+  calcularTotal,
 };
