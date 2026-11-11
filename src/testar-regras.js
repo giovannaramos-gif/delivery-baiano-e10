@@ -8,15 +8,13 @@ console.assert(regras.calcularDesconto(3000, "PRIMEIRA10", true) === 300, "PRIME
 console.assert(regras.calcularDesconto(3000, "PRIMEIRA10", false) === 0, "PRIMEIRA10 só vale na primeira compra");
 console.assert(regras.dentroDoHorario(11) === true, "11h em ponto aceita");
 console.assert(regras.dentroDoHorario(22) === false, "22h em ponto recusa");
+console.assert(regras.subtotalDosItens([{ id: 1, qtd: 2 }, { id: 6, qtd: 1 }]) === 3000, "itens: 2 Acarajés + 1 Cocada");
 
-console.log("Fim. Se nenhum Assertion failed apareceu acima, tudo passou.");
-
-// Os 5 cenários do pedido.
-const pedido1 = { qtds: [2, 1, 0, 0, 0, 1], bairro: "Barra", hora: 12, primeiraCompra: false, cupom: "" };
-const pedido2 = { qtds: [0, 0, 0, 0, 2, 0], bairro: "Rio Vermelho", hora: 19, primeiraCompra: true, cupom: "PRIMEIRA10" };
-const pedido3 = { qtds: [1, 0, 0, 0, 0, 1], bairro: "Pituba", hora: 12, primeiraCompra: false, cupom: "" };
-const pedido4 = { qtds: [0, 0, 1, 0, 0, 0], bairro: "Itapuã", hora: 22, primeiraCompra: false, cupom: "" };
-const pedido5 = { qtds: [0, 0, 0, 1, 0, 0], bairro: "Liberdade", hora: 13, primeiraCompra: false, cupom: "" };
+const pedido1 = { itens: [{ id: 1, qtd: 2 }, { id: 2, qtd: 1 }, { id: 6, qtd: 1 }], bairro: "Barra", hora: 12, primeiraCompra: false, cupom: "" };
+const pedido2 = { itens: [{ id: 5, qtd: 2 }], bairro: "Rio Vermelho", hora: 19, primeiraCompra: true, cupom: "PRIMEIRA10" };
+const pedido3 = { itens: [{ id: 1, qtd: 1 }, { id: 6, qtd: 1 }], bairro: "Pituba", hora: 12, primeiraCompra: false, cupom: "" };
+const pedido4 = { itens: [{ id: 3, qtd: 1 }], bairro: "Itapuã", hora: 22, primeiraCompra: false, cupom: "" };
+const pedido5 = { itens: [{ id: 4, qtd: 1 }], bairro: "Liberdade", hora: 13, primeiraCompra: false, cupom: "" };
 
 console.assert(regras.motivoDaRecusa(pedido1) === "", "1: pedido comum é aceito");
 console.assert(regras.calcularTotal(pedido1) === 4600, "1: total R$ 46,00");
@@ -25,3 +23,5 @@ console.assert(regras.calcularTotal(pedido2) === 3200, "2: total R$ 32,00 com o 
 console.assert(regras.motivoDaRecusa(pedido3) === "abaixo do mínimo de R$ 30,00 em itens", "3: abaixo do mínimo");
 console.assert(regras.motivoDaRecusa(pedido4) === "pedidos só das 11h às 22h", "4: 22h em ponto");
 console.assert(regras.motivoDaRecusa(pedido5) === "não entregamos em Liberdade", "5: fora da área");
+
+console.log("Fim. Se nenhum Assertion failed apareceu acima, tudo passou.");
