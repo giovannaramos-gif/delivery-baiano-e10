@@ -76,14 +76,5 @@ module.exports = {
   dentroDoHorario,
   motivoDaRecusa,
   calcularTotal,
-};
-
-module.exports = {
-  calcularSubtotal,
-  calcularTaxa,
-  calcularDesconto,
-  dentroDoHorario,
-  motivoDaRecusa,
-  calcularTotal,
   PEDIDO_MINIMO,
 };
