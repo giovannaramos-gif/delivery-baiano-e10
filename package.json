@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/giovannaramos-gif/delivery-baiano-e10/issues"
   },
-  "homepage": "https://github.com/giovannaramos-gif/delivery-baiano-e10#readme"
+  "homepage": "https://github.com/giovannaramos-gif/delivery-baiano-e10#readme",
+  "dependencies": {
+    "dayjs": "^1.11.23"
+  }
 }

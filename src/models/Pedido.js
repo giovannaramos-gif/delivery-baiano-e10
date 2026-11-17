@@ -11,6 +11,7 @@ class Pedido {
     this.hora = hora;
     this.cupom = cupom;
     this.primeiraCompra = primeiraCompra;
+    this.criadoEm = new Date();
   }
 
   adicionarItem(produto, qtd) {
