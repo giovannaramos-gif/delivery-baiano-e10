@@ -1,5 +1,5 @@
 // src/regras.js - as regras do pedido da Dona Ju, em funções
-const { buscarProduto } = require("./dados/cardapio.js");
+import { buscarProduto } from "./dados/cardapio.js";
 const PEDIDO_MINIMO = 3000;
 
 // Soma preço vezes quantidade, prato por prato
@@ -68,7 +68,7 @@ function calcularTotal(pedido) {
   return subtotal - desconto + taxa;
 }
 
-module.exports = {
+export {
   calcularSubtotal,
   subtotalDosItens,
   calcularTaxa,

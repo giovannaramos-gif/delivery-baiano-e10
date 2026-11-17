@@ -1,7 +1,7 @@
 // src/models/Pedido.js - o pedido da Dona Ju como classe
 // Valida estoque e pedido mínimo, e calcula o total com as regras do regras.js.
-const regras = require("../regras.js");
-const ItemPedido = require("./ItemPedido.js");
+import * as regras from "../regras.js";
+import ItemPedido from "./ItemPedido.js";
 
 class Pedido {
   #itens = [];
@@ -51,4 +51,4 @@ class Pedido {
   }
 }
 
-module.exports = Pedido;
+export default Pedido;

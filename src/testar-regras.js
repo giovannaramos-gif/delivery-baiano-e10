@@ -1,5 +1,5 @@
 // src/testar-regras.js - confere as regras do regras.js
-const regras = require("./regras.js");
+import * as regras from "./regras.js";
 console.log("Testando as regras...");
 
 console.assert(regras.calcularSubtotal([1200, 600], [2, 1]) === 3000, "subtotal: 2 x R$ 12,00 + 1 x R$ 6,00");
