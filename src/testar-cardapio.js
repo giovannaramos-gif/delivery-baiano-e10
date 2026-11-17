@@ -1,5 +1,5 @@
 // src/testar-cardapio.js - confere o cardápio e as funções de consulta
-const { CARDAPIO, buscarProduto, listarAtivos } = require("./dados/cardapio.js");
+import { CARDAPIO, buscarProduto, listarAtivos } from "./dados/cardapio.js";
 console.log("Testando o cardápio...");
 console.assert(CARDAPIO.length >= 6, "o cardápio tem pelo menos 6 produtos");
 console.assert(buscarProduto(1).nome === "Acarajé", "o id 1 é o Acarajé");
