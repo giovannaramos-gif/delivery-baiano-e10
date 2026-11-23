@@ -40,7 +40,7 @@ class Pedido {
       throw new ErroValidacao(`preço inválido para ${nome}: ${preco}`);
     }
     if (this.subtotal() < regras.PEDIDO_MINIMO) {
-      throw new ErroValidacao(`preço inválido para ${nome}: ${preco}`);
+      throw new ErroValidacao("abaixo do mínimo de R$ 30,00 em itens");
     }
   }
 
