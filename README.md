@@ -37,3 +37,22 @@ Os pedidos ficam em `data/pedidos.json` (fora do Git: cada máquina tem os seus)
 | 3 | node src/salvar-pedido.js de novo | Pedido 2 gravado | sim |
 | 4 | Fechei o terminal, abri outro e rodei node src/listar-pedidos.js | 2 pedido(s) no arquivo, #1 e #2 | sim |
 | 5 | Busquei o pedido 99 | O pedido 99 não existe | sim |
+
+## Banco de dados (PostgreSQL)
+
+Para testar sem instalar nada: db-fiddle.com, Database PostgreSQL 17.
+Cole o `db/schema.sql` e, embaixo, o `db/seed.sql` no painel Schema SQL,
+as consultas do `db/consultas.sql` no Query SQL, e clique em Run.
+
+Na máquina, precisa do PostgreSQL 16 ou mais novo e do pgAdmin 4.
+1. No pgAdmin: Databases > Create > Database, nome `delivery`.
+2. Botão direito no `delivery` > Query Tool > Open File > `db/schema.sql` > F5.
+3. Open File > `db/seed.sql` > F5.
+4. Para conferir: `db/consultas.sql`, uma consulta por vez.
+Para recomeçar do zero, rode o `schema.sql` e o `seed.sql` de novo.
+
+Pelo psql (SQL Shell, no Windows), as barras do caminho são `/`:
+```sql
+\c delivery
+\i 'D:/projetos/delivery-baiano-e10/db/schema.sql'
+\i 'D:/projetos/delivery-baiano-e10/db/seed.sql'
